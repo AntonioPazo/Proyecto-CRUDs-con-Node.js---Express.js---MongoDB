@@ -1,0 +1,201 @@
+<%- include("template/cabecera", {tituloWeb: 'Catálogo de Tomates' }) %>
+
+<h2 class="my-4 text-center">Catálogo de Tomates</h2>
+
+<!-- Botón para abrir el modal de Agregar -->
+<div class="text-center mb-4">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+        Agregar Tomate
+    </button>
+</div>
+
+<!-- Verificamos si hay tomates disponibles en el catálogo -->
+<% if (tomates.length > 0) { %>
+    <div class="row">
+        <!-- Iteramos a través de todos los tomates -->
+        <% tomates.forEach(tomate => { %>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <!-- Comprobamos si el tomate tiene una imagen -->
+                    <% if (tomate.imagen) { %>
+                        <img src="/uploads/<%= tomate.imagen %>" class="card-img-top" alt="<%= tomate.nombre %>"
+                            style="height: 200px; object-fit: cover;">
+                    <% } else { %>
+                        <!-- Si no tiene imagen, mostramos una imagen por defecto -->
+                        <img src="https://via.placeholder.com/400x200?text=Sin+Imagen" class="card-img-top"
+                            alt="Sin Imagen" style="height: 200px; object-fit: cover;">
+                    <% } %>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <%= tomate.nombre %> <!-- Nombre del tomate -->
+                        </h5>
+                        <p class="card-text">
+                            <%= tomate.descripcion %> <!-- Descripción del tomate -->
+                        </p>
+                        <p class="card-text text-success fw-bold">
+                            <%= tomate.precio.toFixed(2) %> €/kg <!-- Precio del tomate -->
+                        </p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <!-- Botón para abrir el modal de Editar -->
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#modalEditar-<%= tomate._id %>">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                        </button>
+                        <!-- Botón para abrir el modal de Eliminar -->
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#modalEliminar" data-bs-id="<%= tomate._id %>"
+                            data-bs-nombre="<%= tomate.nombre %>">
+                            <i class="fa-solid fa-eraser"></i> Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Editar -->
+            <div class="modal fade" id="modalEditar-<%= tomate._id %>" tabindex="-1"
+                aria-labelledby="modalEditarLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalEditarLabel">Editar Tomate</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                        </div>
+                        <form action="/tomates/editar/<%= tomate._id %>" method="POST" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <!-- Campos del formulario para editar el tomate -->
+                                <div class="form-group mb-3">
+                                    <label for="nombre">Nombre del Tomate</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre"
+                                        value="<%= tomate.nombre %>" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="descripcion">Descripción</label>
+                                    <input type="text" class="form-control" id="descripcion" name="descripcion"
+                                        value="<%= tomate.descripcion %>" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="precio">Precio (€/kg)</label>
+                                    <input type="number" step="0.01" class="form-control" id="precio" name="precio"
+                                        value="<%= tomate.precio %>" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="imagen">Imagen del Tomate</label>
+                                    <input type="file" class="form-control" id="imagen" name="imagen"
+                                        accept="image/*">
+                                    <% if (tomate.imagen) { %>
+                                        <img src="/uploads/<%= tomate.imagen %>" alt="Imagen actual"
+                                            class="img-thumbnail mt-2" style="width: 150px; height: auto;">
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+<% } else { %>
+    <p class="alert alert-info text-center">No hay tomates en el catálogo.</p>
+<% } %>
+
+<!-- Modal de Agregar -->
+<div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAgregarLabel">Agregar Nuevo Tomate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form action="/tomates" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <!-- Campos del formulario para agregar un tomate -->
+                    <div class="form-group mb-3">
+                        <label for="nombre">Nombre del Tomate</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="descripcion">Descripción</label>
+                        <input type="text" class="form-control" id="descripcion" name="descripcion" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="precio">Precio (€/kg)</label>
+                        <input type="number" step="0.01" class="form-control" id="precio" name="precio" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="imagen">Imagen del Tomate</label>
+                        <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Eliminar -->
+<div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar el tomate <strong id="nombreTomateEliminar"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formEliminar" action="" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Paginación -->
+<nav aria-label="Paginación de tomates">
+    <ul class="pagination justify-content-center mt-4">
+        <!-- Botón de página anterior -->
+        <li class="page-item <%= paginaActual === 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="?page=<%= paginaActual - 1 %>">Pagina Anterior</a>
+        </li>
+        <% for(let i=1; i <=totalPaginas; i++) { %>
+            <li class="page-item <%= i === paginaActual ? 'active' : '' %>">
+                <a class="page-link <%= i === paginaActual ? 'bg-success text-white' : '' %>" href="?page=<%= i %>">
+                    <%= i %>
+                </a>
+            </li>
+        <% } %>
+        <!-- Botón de siguiente página -->
+        <li class="page-item <%= paginaActual === totalPaginas ? 'disabled' : '' %>">
+            <a class="page-link" href="?page=<%= paginaActual + 1 %>">Siguiente</a>
+        </li>
+    </ul>
+</nav>
+
+<script>
+    // Script para manejar el modal de eliminación
+    var modalEliminar = document.getElementById('modalEliminar');
+    modalEliminar.addEventListener('show.bs.modal', function (event) {
+        let button = event.relatedTarget;
+        let tomateId = button.getAttribute('data-bs-id');
+        let tomateNombre = button.getAttribute('data-bs-nombre');
+        let nombreTomateEliminar = modalEliminar.querySelector('#nombreTomateEliminar');
+        nombreTomateEliminar.textContent = tomateNombre;
+        let formEliminar = modalEliminar.querySelector('#formEliminar');
+        formEliminar.action = '/tomates/eliminar/' + tomateId;
+    });
+</script>
+
+<%- include("template/footer") %>

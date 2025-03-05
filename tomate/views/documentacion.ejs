@@ -1,0 +1,63 @@
+<%- include("template/cabecera", {tituloWeb: 'Guía Completa para Desplegar la Aplicación' }) %>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Guía para Desplegar la Aplicación</h1>
+
+    <h2>1. Requisitos Previos</h2>
+    <p>Antes de comenzar, asegúrate de tener instalados los siguientes programas:</p>
+    <div class="list-group">
+        <div class="list-group-item">
+            <strong>Node.js</strong> - Versión 16 o superior.
+        </div>
+        <div class="list-group-item">
+            <strong>MongoDB Atlas</strong> o algún servicio de base de datos MongoDB.
+        </div>
+        <div class="list-group-item">
+            <strong>Git</strong> - Para clonar el repositorio, si es necesario.
+        </div>
+    </div>
+
+    <h2>2. Clonación del Repositorio</h2>
+    <p>Para obtener el código de la aplicación, abre tu terminal y ejecuta:</p>
+    <pre><code>git clone <URL_DEL_REPOSITORIO></code></pre>
+
+    <h2>3. Instalación de Dependencias</h2>
+    <p>Una vez clonado el repositorio, navega al directorio de la aplicación y ejecuta:</p>
+    <pre><code>cd catalogo-tomates
+npm install</code></pre>
+
+    <h2>4. Configuración del Entorno</h2>
+    <p>Crea un archivo <strong>.env</strong> en la raíz del proyecto e ingresa las siguientes variables de entorno:</p>
+    <pre><code>
+DB_URL=mongodb+srv://<usuario>:<contraseña>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=<nombre_app>
+PORT=4000
+    </code></pre>
+    <p><strong>Detalles:</strong></p>
+    <div class="list-group">
+        <div class="list-group-item">
+            <strong>DB_URL</strong>: Sustituye <em>&lt;usuario&gt;</em>, <em>&lt;contraseña&gt;</em>, <em>&lt;cluster&gt;</em> y <em>&lt;nombre_app&gt;</em> por los datos de tu base de datos en MongoDB Atlas.
+        </div>
+        <div class="list-group-item">
+            <strong>PORT</strong>: Define el puerto en el que deseas ejecutar el servidor. Si no necesitas cambiarlo, puedes dejarlo como está.
+        </div>
+    </div>
+
+    <h2>5. Ejecutar en Modo Desarrollo con Nodemon</h2>
+    <p>Para ejecutar la aplicación en modo desarrollo y permitir que el servidor se reinicie automáticamente cuando realices cambios, necesitas instalar **Nodemon**. Sigue estos pasos:</p>
+    <div class="list-group">
+        <div class="list-group-item">
+            <strong>Paso 1:</strong> Instala Nodemon con el siguiente comando:
+            <pre><code>npm install --save-dev nodemon</code></pre>
+        </div>
+        <div class="list-group-item">
+            <strong>Paso 2:</strong> Abre el archivo <strong>package.json</strong> y agrega lo siguiente en la sección "scripts":
+            <pre><code>
+"scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+}
+            </code></pre>
+        </div>
+        <div class="list-group-item">
+            <strong>Paso 3:</strong> Ejecuta el servidor en modo desarrollo con el comando:
+            <pre><code>npm run dev</code></pre
